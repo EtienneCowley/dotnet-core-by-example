@@ -6,14 +6,14 @@ public partial class EditFlight
 {
     [Parameter] public string? Id { get; set; }
     
-    private FlightEditViewModel? Model { get; set; }
+    private EditFlightViewModel? Model { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         if(Id is null)
             return;
         
-        Model = await Mediator.Send(new GetFlightEditRequest(Guid.Parse(Id)));
+        Model = await Mediator.Send(new GetFlightToEditRequest(Guid.Parse(Id)));
     }
 
     private async Task SetDelay()
@@ -23,6 +23,6 @@ public partial class EditFlight
         
         var command = new SetDelayCommand(Model.Id, 30);
         await Mediator.Send(command);
-        Model = await Mediator.Send(new GetFlightEditRequest(Guid.Parse(Id)));
+        Model = await Mediator.Send(new GetFlightToEditRequest(Guid.Parse(Id)));
     }
 }
