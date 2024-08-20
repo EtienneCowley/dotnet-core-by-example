@@ -1,27 +1,33 @@
-using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Components;
 
 namespace FlightMonitor.Features.GetDepartures;
 
 public partial class GetDepartures
 {
-    private GetDeparturesViewModel? _model;
-    private HubConnection? _hubConnection = null;
-
+    private GetDeparturesViewModel? Model { get; set; }
+    private HubConnection? HubConnection { get; set; }
+    
+    [Inject] private IMediator? Mediator { get; set; }
+    [Inject] private IConfiguration? Configuration { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
-        _model = await Mediator.Send(new GetDeparturesQuery());
+        if (Mediator is null || Configuration is null)
+            return;
+        
+        Model = await Mediator.Send(new GetDeparturesQuery());
 
         var hubUrl = Configuration["SignalRHubUrl"];
-        _hubConnection = new HubConnectionBuilder().WithUrl(hubUrl!).Build();
-        _hubConnection.On("RefreshFlightList", async () =>
+        HubConnection = new HubConnectionBuilder().WithUrl(hubUrl!).Build();
+        HubConnection.On("RefreshFlightList", async () =>
         {
             try
             {
                 var newModel = await Mediator.Send(new GetDeparturesQuery());
                 await InvokeAsync(() =>
                 {
-                    _model = newModel;
-                    StateHasChanged(); // Ensure this is inside InvokeAsync
+                    Model = newModel;
+                    StateHasChanged();
                 });
             }
             catch (Exception ex)
@@ -31,6 +37,6 @@ public partial class GetDepartures
             }
         });
 
-        await _hubConnection.StartAsync();
+        await HubConnection.StartAsync();
     }
 }

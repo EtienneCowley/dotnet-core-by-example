@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace FlightMonitor.Infrastructure.Database;
 
 public class AppDbContext : DbContext

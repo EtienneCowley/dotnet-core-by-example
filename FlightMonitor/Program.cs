@@ -1,7 +1,4 @@
 using FlightMonitor.Components;
-using FlightMonitor.Infrastructure;
-using FlightMonitor.Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

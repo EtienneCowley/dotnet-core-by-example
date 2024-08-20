@@ -1,13 +1,9 @@
-@attribute [StreamRendering(true)]
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+@attribute [StreamRendering]
 @rendermode InteractiveServer
 
-@inject IConfiguration Configuration
-@using MediatR
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
-@inject IMediator  Mediator
-@using Microsoft.AspNetCore.SignalR.Client
-
-@if (_model == null)
+@if (Model == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,7 +13,7 @@ else
         <table class="table mb-0 table-bordered  table-hover table-striped small">
             <thead>
             <tr>
-                <th class="py-2" scope="col">Time</th>
+                <th class="py-2" scope="col">ETA</th>
                 <th class="py-2" scope="col">Destination</th>
                 <th class="py-2" scope="col">Flight</th>
                 <th class="py-2" scope="col">Status</th>
@@ -26,7 +22,7 @@ else
             </thead>
             <tbody>
 
-            @foreach (var item in _model.Departures)
+            @foreach (var item in Model.Departures)
             {
                 <tr class="@(item.Status == "Delayed" ? "delayed-status" : "")">
                     <td>@item.Time</td>

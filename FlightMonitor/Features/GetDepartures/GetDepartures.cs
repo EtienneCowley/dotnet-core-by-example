@@ -1,7 +1,3 @@
-using FlightMonitor.Infrastructure.Database;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 namespace FlightMonitor.Features.GetDepartures;
 
 public record DepartureViewModel(
