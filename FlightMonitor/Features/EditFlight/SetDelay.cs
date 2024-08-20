@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlightMonitor.Features.EditFlight;
 
-public class SetDelayCommandHandler(AppDbContext dbContext, IMediator publisher) : IRequestHandler<SetDelayCommand>
+public record SetDelayCommand(Guid Id, uint DelayInMinutes) : IRequest;
+
+public class SetDelayCommandHandler(AppDbContext dbContext, IMediator publisher)
+    : IRequestHandler<SetDelayCommand>
 {
     public async Task Handle(SetDelayCommand request, CancellationToken cancellationToken)
     {
