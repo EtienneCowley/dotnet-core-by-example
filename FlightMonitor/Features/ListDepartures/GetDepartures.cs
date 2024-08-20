@@ -7,14 +7,17 @@ public record DepartureViewModel(
     string Destination,
     string Status);
 
-public record GetDeparturesViewModel(IEnumerable<DepartureViewModel> Departures);
+public record ListDeparturesViewModel(IEnumerable<DepartureViewModel> Departures);
 
-public record GetDeparturesQuery : IRequest<GetDeparturesViewModel>;
+/// <summary>
+/// Gets a list of the top 20 departures.
+/// </summary>
+public record GetDeparturesRequest : IRequest<ListDeparturesViewModel>;
 
 public class GetDeparturesRequestHandler(IDbContextFactory<AppDbContext> contextFactory) 
-    : IRequestHandler<GetDeparturesQuery, GetDeparturesViewModel>
+    : IRequestHandler<GetDeparturesRequest, ListDeparturesViewModel>
 {
-    public async Task<GetDeparturesViewModel> Handle(GetDeparturesQuery request, CancellationToken cancellationToken)
+    public async Task<ListDeparturesViewModel> Handle(GetDeparturesRequest request, CancellationToken cancellationToken)
     {
         var dbContext = await contextFactory.CreateDbContextAsync(cancellationToken);
         var flights = await dbContext.Flights
@@ -31,6 +34,6 @@ public class GetDeparturesRequestHandler(IDbContextFactory<AppDbContext> context
                 flight.Status.ToString()))
             .ToList();
         
-        return new GetDeparturesViewModel(viewModels);
+        return new ListDeparturesViewModel(viewModels);
     }
 }

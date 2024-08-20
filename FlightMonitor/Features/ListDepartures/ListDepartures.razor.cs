@@ -1,21 +1,21 @@
+using FlightMonitor.Features.GetDepartures;
 using Microsoft.AspNetCore.Components;
 
-namespace FlightMonitor.Features.GetDepartures;
+namespace FlightMonitor.Features.ListDepartures;
 
-public partial class GetDepartures
+public partial class ListDepartures
 {
-    private GetDeparturesViewModel? Model { get; set; }
+    private ListDeparturesViewModel? Model { get; set; }
     private HubConnection? HubConnection { get; set; }
-    
     [Inject] private IMediator? Mediator { get; set; }
     [Inject] private IConfiguration? Configuration { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         if (Mediator is null || Configuration is null)
             return;
-        
-        Model = await Mediator.Send(new GetDeparturesQuery());
+
+        Model = await Mediator.Send(new GetDeparturesRequest());
 
         var hubUrl = Configuration["SignalRHubUrl"];
         HubConnection = new HubConnectionBuilder().WithUrl(hubUrl!).Build();
@@ -23,7 +23,7 @@ public partial class GetDepartures
         {
             try
             {
-                var newModel = await Mediator.Send(new GetDeparturesQuery());
+                var newModel = await Mediator.Send(new GetDeparturesRequest());
                 await InvokeAsync(() =>
                 {
                     Model = newModel;
