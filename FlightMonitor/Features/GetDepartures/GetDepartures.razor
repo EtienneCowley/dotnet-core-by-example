@@ -3,7 +3,6 @@
 
 @inject IConfiguration Configuration
 @using MediatR
-@using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @inject IMediator  Mediator
 @using Microsoft.AspNetCore.SignalR.Client
@@ -41,37 +40,4 @@ else
         </table>
 
     </div>
-}
-
-@code {
-    private GetDeparturesViewModel? _model;
-    private HubConnection? _hubConnection = null;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        _model = await Mediator.Send(new GetDeparturesQuery());
-
-        var hubUrl = Configuration["SignalRHubUrl"];
-        _hubConnection = new HubConnectionBuilder().WithUrl(hubUrl!).Build();
-        _hubConnection.On("RefreshFlightList", async () =>
-        {
-            try
-            {
-                var newModel = await Mediator.Send(new GetDeparturesQuery());
-                await InvokeAsync(() => 
-                {
-                    _model = newModel;
-                    StateHasChanged(); // Ensure this is inside InvokeAsync
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error refreshing flight list: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-            }
-
-        });
-        
-        await _hubConnection.StartAsync();
-    }
 }
